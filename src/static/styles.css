@@ -1,3 +1,30 @@
+/* Toolbar styles for filters and search */
+#activities-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+#activities-toolbar input[type="text"],
+#activities-toolbar select {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+#activities-toolbar select {
+  min-width: 140px;
+}
+
+@media (max-width: 600px) {
+  #activities-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
 * {
   box-sizing: border-box;
   margin: 0;
