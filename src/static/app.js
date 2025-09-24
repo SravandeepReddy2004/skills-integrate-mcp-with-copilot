@@ -1,4 +1,80 @@
+
+// --- Animated Git-style branch lines background ---
+function animateGitBranches() {
+  const canvas = document.getElementById('git-branches-bg');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  // Branch line data
+  const branchColors = ['#b2ff1a', '#222', '#fff'];
+  const branches = [];
+  const branchCount = 7;
+  for (let i = 0; i < branchCount; i++) {
+    branches.push({
+      x: 100 + i * (window.innerWidth - 200) / (branchCount - 1),
+      y: Math.random() * window.innerHeight,
+      speed: 0.2 + Math.random() * 0.3,
+      color: branchColors[i % branchColors.length],
+      points: Array.from({length: 8}, (_, j) => ({
+        x: 100 + i * (window.innerWidth - 200) / (branchCount - 1) + (Math.random() - 0.5) * 40,
+        y: (window.innerHeight / 8) * j + Math.random() * 30
+      }))
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    branches.forEach(branch => {
+      ctx.save();
+      ctx.strokeStyle = branch.color;
+      ctx.lineWidth = 3;
+      ctx.globalAlpha = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(branch.points[0].x, branch.points[0].y);
+      for (let i = 1; i < branch.points.length; i++) {
+        ctx.lineTo(branch.points[i].x, branch.points[i].y);
+      }
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      // Draw git dots
+      for (let i = 0; i < branch.points.length; i += 2) {
+        ctx.beginPath();
+        ctx.arc(branch.points[i].x, branch.points[i].y, 7, 0, 2 * Math.PI);
+        ctx.fillStyle = branch.color;
+        ctx.globalAlpha = 0.7;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      ctx.restore();
+    });
+  }
+
+  function animate() {
+    // Animate points
+    branches.forEach(branch => {
+      branch.points.forEach((pt, idx) => {
+        pt.y += Math.sin(Date.now() / 1200 + idx + branch.x) * 0.08 * (idx + 1) * branch.speed;
+        pt.x += Math.cos(Date.now() / 1500 + idx + branch.y) * 0.04 * (idx + 1) * branch.speed;
+      });
+    });
+    draw();
+    requestAnimationFrame(animate);
+  }
+  animate();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  animateGitBranches();
 
   const activitiesList = document.getElementById("activities-list");
   const activitySelect = document.getElementById("activity");
